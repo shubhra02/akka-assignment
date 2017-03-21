@@ -6,11 +6,6 @@ import com.typesafe.config.ConfigFactory
 import akka.routing.FromConfig
 
 object BookMyShow extends App {
-  val system = ActorSystem("BookMyShowSystem")
-  val bookProps = BookMyShowActor.bookMyShowProps
-  val bookRef = system.actorOf(bookProps)
-  val userSystem = system.actorOf(FromConfig.props(UserActor.prop(bookRef)),"poolRouter")
-
 
   val user = ConfigFactory.parseString(
     """
@@ -23,7 +18,14 @@ object BookMyShow extends App {
     """.stripMargin
   )
 
+  val system = ActorSystem("BookMyShowSystem", user)
+  val bookProps = BookMyShowActor.bookMyShowProps
+  val bookRef = system.actorOf(bookProps)
+  val userSystem = system.actorOf(FromConfig.props(UserActor.userProps(bookRef)),"poolRouter")
+
   userSystem ! "bookseat"
+  userSystem ! "bookseat"
+  userSystem ! "cancelseat"
   userSystem ! "bookseat"
 
 }

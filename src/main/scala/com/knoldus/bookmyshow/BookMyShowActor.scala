@@ -6,9 +6,16 @@ class BookMyShowActor extends Actor {
   var isAvailable = true
   override def receive = {
     case "getstatus" => sender() ! isAvailable
-    case "bookseat" => isAvailable = false
-                     sender() ! isAvailable
-                     println("Seat booked")
+    case "bookseat" => if(isAvailable == true){
+
+      sender() ! isAvailable
+      println("Seat booked")
+      isAvailable = false
+                        }
+      else{
+      println("cannot book the seat! HOUSEFULL.. :(")
+    }
+
     case "cancelseat" => isAvailable = true
                       println("seat canceled")
   }
